@@ -62,7 +62,7 @@ import LocizeLastUsed from 'locize-lastused';
 i18next
   .use(LocizeLastUsed)
   .init({
-    backend: options
+    locizeLastUsed: options
   });
 ```
 
