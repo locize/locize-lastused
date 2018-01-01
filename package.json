@@ -1,6 +1,6 @@
 {
   "name": "locize-lastused",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "Using API lastUsed from cientside",
   "main": "dist/commonjs/index.js",
   "jsnext:main": "dist/es/index.js",
