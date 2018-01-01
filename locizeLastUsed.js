@@ -32,10 +32,6 @@ function replaceIn(str, arr, options) {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 // https://gist.github.com/Xeoncross/7663273
 function ajax(url, options, callback, data, cache) {
   try {
@@ -70,101 +66,83 @@ function getDefaults() {
   };
 }
 
-var LocizeLastUsed = function () {
-  function LocizeLastUsed() {
-    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+var locizeLastUsed = {
+  init: function init(options) {
+    var isI18next = options.t && typeof options.t === 'function';
 
-    _classCallCheck(this, LocizeLastUsed);
+    this.options = isI18next ? _extends({}, getDefaults(), this.options, options.options.locizeLastUsed) : _extends({}, getDefaults(), this.options, options);
 
-    this.init(options);
+    this.submitting = null;
+    this.pending = {};
+    this.done = {};
 
-    this.type = '3rdParty';
-  }
+    this.submit = debounce(this.submit, this.options.debounceSubmit);
 
-  _createClass(LocizeLastUsed, [{
-    key: 'init',
-    value: function init(options) {
-      var isI18next = options.t && typeof options.t === 'function';
+    // intercept
+    if (isI18next) this.interceptI18next(i18next);
+  },
 
-      this.options = isI18next ? _extends({}, getDefaults(), this.options, options.options.locizeLastUsed) : _extends({}, getDefaults(), this.options, options);
+  interceptI18next: function interceptI18next(i18next) {
+    var _this = this;
 
-      this.submitting = null;
-      this.pending = {};
-      this.done = {};
+    var origGetResource = i18next.services.resourceStore.getResource;
 
-      this.submit = debounce(this.submit, this.options.debounceSubmit);
+    i18next.services.resourceStore.getResource = function (lng, ns, key, options) {
+      // call last used
+      if (key) _this.used(ns, key);
 
-      // intercept
-      if (isI18next) this.interceptI18next(i18next);
-    }
-  }, {
-    key: 'interceptI18next',
-    value: function interceptI18next(i18next) {
-      var _this = this;
+      // by pass orginal call
+      return origGetResource.call(i18next.services.resourceStore, lng, ns, key, options);
+    };
+  },
 
-      var origGetResource = i18next.services.resourceStore.getResource;
+  used: function used(ns, key) {
+    var _this2 = this;
 
-      i18next.services.resourceStore.getResource = function (lng, ns, key, options) {
-        // call last used
-        _this.used(ns, key);
+    ['pending', 'done'].forEach(function (k) {
+      if (_this2.done[ns] && _this2.done[ns][key]) return;
+      if (!_this2[k][ns]) _this2[k][ns] = {};
+      _this2[k][ns][key] = true;
+    });
 
-        // by pass orginal call
-        return origGetResource.call(i18next.services.resourceStore, lng, ns, key, options);
-      };
-    }
-  }, {
-    key: 'used',
-    value: function used(ns, key) {
-      var _this2 = this;
+    this.submit();
+  },
 
-      ['pending', 'done'].forEach(function (k) {
-        if (_this2.done[ns] && _this2.done[ns][key]) return;
-        if (!_this2[k][ns]) _this2[k][ns] = {};
-        _this2[k][ns][key] = true;
-      });
+  submit: function submit() {
+    var _this3 = this;
 
-      this.submit();
-    }
-  }, {
-    key: 'submit',
-    value: function submit() {
-      var _this3 = this;
+    if (this.submitting) return this.submit();
+    this.submitting = this.pending;
+    this.pending = {};
 
-      if (this.submitting) return this.submit();
-      this.submitting = this.pending;
-      this.pending = {};
+    var url = replaceIn(this.options.lastUsedPath, ['projectId', 'version', 'lng', 'ns'], _extends({}, this.options, { lng: this.options.referenceLng }));
 
-      var url = replaceIn(this.options.lastUsedPath, _extends({}, this.options, { lng: this.options.referenceLng }));
+    var namespaces = Object.keys(this.submitting);
 
-      var namespaces = Object.keys(this.submitting);
+    var todo = namespaces.length;
+    var doneOne = function doneOne() {
+      todo--;
 
-      var todo = namespaces.length;
-      var doneOne = function doneOne() {
-        todo--;
+      if (!todo) {
+        _this3.submitting = null;
+      }
+    };
+    namespaces.forEach(function (ns) {
+      var keys = Object.keys(_this3.submitting[ns]);
 
-        if (!todo) {
-          _this3.submitting = null;
-        }
-      };
-      namespaces.forEach(function (ns) {
-        var keys = Object.keys(_this3.submitting[ns]);
-
-        if (keys.length) {
-          ajax(url, _extends({ authorize: true }, _this3.options), function (data, xhr) {
-            doneOne();
-          }, keys);
-        } else {
+      if (keys.length) {
+        ajax(url, _extends({ authorize: true }, _this3.options), function (data, xhr) {
           doneOne();
-        }
-      });
-    }
-  }]);
+        }, keys);
+      } else {
+        doneOne();
+      }
+    });
+  }
+};
 
-  return LocizeLastUsed;
-}();
+locizeLastUsed.type = '3rdParty';
 
-LocizeLastUsed.type = '3rdParty';
-
-return LocizeLastUsed;
+return locizeLastUsed;
 
 })));

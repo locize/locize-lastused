@@ -34,14 +34,8 @@ function getDefaults() {
   };
 }
 
-class LocizeLastUsed {
-  constructor(options = {}) {
-    this.init(options);
-
-    this.type = '3rdParty';
-  }
-
-  init(options) {
+const locizeLastUsed = {
+  init: function(options) {
     const isI18next = options.t && typeof options.t === 'function';
 
     this.options = isI18next ? { ...getDefaults(), ...this.options, ...options.options.locizeLastUsed } : { ...getDefaults(), ...this.options, ...options };
@@ -54,21 +48,21 @@ class LocizeLastUsed {
 
     // intercept
     if (isI18next) this.interceptI18next(i18next);
-  }
+  },
 
-  interceptI18next(i18next) {
+  interceptI18next: function(i18next) {
     const origGetResource = i18next.services.resourceStore.getResource;
 
     i18next.services.resourceStore.getResource = (lng, ns, key, options) => {
       // call last used
-      this.used(ns, key);
+      if (key) this.used(ns, key);
 
       // by pass orginal call
       return origGetResource.call(i18next.services.resourceStore, lng, ns, key, options);
     }
-  }
+  },
 
-  used(ns, key) {
+  used: function(ns, key) {
     ['pending', 'done'].forEach((k) => {
       if (this.done[ns] && this.done[ns][key]) return;
       if (!this[k][ns]) this[k][ns] = {};
@@ -76,14 +70,14 @@ class LocizeLastUsed {
     });
 
     this.submit();
-  }
+  },
 
-  submit() {
+  submit: function() {
     if (this.submitting) return this.submit();
     this.submitting = this.pending;
     this.pending = {};
 
-    let url = utils.replaceIn(this.options.lastUsedPath, { ...this.options, lng: this.options.referenceLng });
+    let url = utils.replaceIn(this.options.lastUsedPath, ['projectId', 'version', 'lng', 'ns'], { ...this.options, lng: this.options.referenceLng });
 
     const namespaces = Object.keys(this.submitting);
 
@@ -107,6 +101,6 @@ class LocizeLastUsed {
   }
 }
 
-LocizeLastUsed.type = '3rdParty';
+locizeLastUsed.type = '3rdParty';
 
-export default LocizeLastUsed;
+export default locizeLastUsed;
