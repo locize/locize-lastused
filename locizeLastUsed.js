@@ -79,7 +79,7 @@ var locizeLastUsed = {
     this.submit = debounce(this.submit, this.options.debounceSubmit);
 
     // intercept
-    if (isI18next) this.interceptI18next(i18next);
+    if (isI18next) this.interceptI18next(options);
   },
 
   interceptI18next: function interceptI18next(i18next) {
