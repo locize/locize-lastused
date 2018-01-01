@@ -30,7 +30,7 @@ function getDefaults() {
     crossDomain: true,
     setContentTypeJSON: false,
     version: 'latest',
-    debounceSubmit: '90000'
+    debounceSubmit: 90000
   };
 }
 
@@ -77,8 +77,6 @@ const locizeLastUsed = {
     this.submitting = this.pending;
     this.pending = {};
 
-    let url = utils.replaceIn(this.options.lastUsedPath, ['projectId', 'version', 'lng', 'ns'], { ...this.options, lng: this.options.referenceLng });
-
     const namespaces = Object.keys(this.submitting);
 
     let todo = namespaces.length;
@@ -91,6 +89,7 @@ const locizeLastUsed = {
     }
     namespaces.forEach((ns) => {
       const keys = Object.keys(this.submitting[ns]);
+      let url = utils.replaceIn(this.options.lastUsedPath, ['projectId', 'version', 'lng', 'ns'], { ...this.options, lng: this.options.referenceLng, ns });
 
       if (keys.length) {
         ajax(url, { ...{ authorize: true }, ...this.options }, (data, xhr) => { doneOne(); }, keys);

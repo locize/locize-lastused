@@ -62,7 +62,7 @@ function getDefaults() {
     crossDomain: true,
     setContentTypeJSON: false,
     version: 'latest',
-    debounceSubmit: '90000'
+    debounceSubmit: 90000
   };
 }
 
@@ -115,8 +115,6 @@ var locizeLastUsed = {
     this.submitting = this.pending;
     this.pending = {};
 
-    var url = replaceIn(this.options.lastUsedPath, ['projectId', 'version', 'lng', 'ns'], _extends({}, this.options, { lng: this.options.referenceLng }));
-
     var namespaces = Object.keys(this.submitting);
 
     var todo = namespaces.length;
@@ -129,6 +127,7 @@ var locizeLastUsed = {
     };
     namespaces.forEach(function (ns) {
       var keys = Object.keys(_this3.submitting[ns]);
+      var url = replaceIn(_this3.options.lastUsedPath, ['projectId', 'version', 'lng', 'ns'], _extends({}, _this3.options, { lng: _this3.options.referenceLng, ns: ns }));
 
       if (keys.length) {
         ajax(url, _extends({ authorize: true }, _this3.options), function (data, xhr) {
