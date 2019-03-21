@@ -44,6 +44,8 @@ const locizeLastUsed = {
     const hostname = window.location && window.location.hostname;
     if (hostname) {
       this.isAllowed = this.options.allowedHosts.indexOf(hostname) > -1;
+    } else {
+      this.isAllowed = true;
     }
 
     this.submitting = null;
