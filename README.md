@@ -15,6 +15,8 @@ $ npm install locize-lastused
 
 ## Options
 
+**IMPORTANT** make sure you do not add your apiKey in the production build to avoid misuse by strangers
+
 ```js
 {
   // the id of your locize project
@@ -27,10 +29,14 @@ $ npm install locize-lastused
   referenceLng: '[LNG]',
 
   // version - defaults to latest
-  version: '[VERSION]'
+  version: '[VERSION]',
 
   // debounce interval to send data in milliseconds
-  debounceSubmit: 90000
+  debounceSubmit: 90000,
+
+  // hostnames that are allowed to send last used data
+  // please keep those to your local system, staging, test servers (not production)
+  allowedHosts: ['localhost']
 }
 ```
 
@@ -39,14 +45,12 @@ $ npm install locize-lastused
 Options can be passed in by setting options.locizeLastUsed in i18next.init:
 
 ```js
-import i18next from 'i18next';
-import locizeLastUsed from 'locize-lastused';
+import i18next from "i18next";
+import locizeLastUsed from "locize-lastused";
 
-i18next
-  .use(locizeLastUsed)
-  .init({
-    locizeLastUsed: options
-  });
+i18next.use(locizeLastUsed).init({
+  locizeLastUsed: options
+});
 ```
 
 - If you don't use a module loader it will be added to `window.locizeLastUsed`
@@ -56,7 +60,7 @@ i18next
 Directly call locizeLastUsed.init:
 
 ```js
-import locizeLastUsed from 'locize-lastused';
+import locizeLastUsed from "locize-lastused";
 
 locizeLastUsed.init(options);
 ```
@@ -64,7 +68,7 @@ locizeLastUsed.init(options);
 then call used function with namespace and key:
 
 ```js
-import locizeLastUsed from 'locize-lastused';
+import locizeLastUsed from "locize-lastused";
 
-locizeLastUsed.used('myNamespace', 'myKey.as.in.locize');
+locizeLastUsed.used("myNamespace", "myKey.as.in.locize");
 ```

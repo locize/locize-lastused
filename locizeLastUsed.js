@@ -51,7 +51,7 @@ function ajax(url, options, callback, data, cache) {
     };
     x.send(JSON.stringify(data));
   } catch (e) {
-    window.console && console.log(e);
+    window.console && window.console.log(e);
   }
 }
 
@@ -62,7 +62,8 @@ function getDefaults() {
     crossDomain: true,
     setContentTypeJSON: false,
     version: 'latest',
-    debounceSubmit: 90000
+    debounceSubmit: 90000,
+    allowedHosts: ['localhost']
   };
 }
 
@@ -71,6 +72,11 @@ var locizeLastUsed = {
     var isI18next = options.t && typeof options.t === 'function';
 
     this.options = isI18next ? _extends({}, getDefaults(), this.options, options.options.locizeLastUsed) : _extends({}, getDefaults(), this.options, options);
+
+    var hostname = window.location && window.location.hostname;
+    if (hostname) {
+      this.isAllowed = this.options.allowedHosts.indexOf(hostname) > -1;
+    }
 
     this.submitting = null;
     this.pending = {};
@@ -111,6 +117,7 @@ var locizeLastUsed = {
   submit: function submit() {
     var _this3 = this;
 
+    if (!this.isAllowed) return;
     if (this.submitting) return this.submit();
     this.submitting = this.pending;
     this.pending = {};
