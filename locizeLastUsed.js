@@ -30,6 +30,18 @@ function replaceIn(str, arr, options) {
 	return ret;
 }
 
+function isMissingOption(obj, props) {
+	return props.reduce(function (mem, p) {
+		if (mem) return mem;
+		if (!obj || !obj[p] || typeof obj[p] !== 'string' || !obj[p].toLowerCase() === p.toLowerCase()) {
+			var err = 'i18next-lastused :: got "' + obj[p] + '" in options for ' + p + ' which is invalid.';
+			console.warn(err);
+			return err;
+		}
+		return false;
+	}, false);
+}
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 // https://gist.github.com/Xeoncross/7663273
@@ -121,6 +133,11 @@ var locizeLastUsed = {
 
     if (!this.isAllowed) return;
     if (this.submitting) return this.submit();
+
+    // missing options
+    var isMissing = isMissingOption(this.options, ['projectId', 'version', 'apiKey', 'referenceLng']);
+    if (isMissing) return callback(new Error(isMissing));
+
     this.submitting = this.pending;
     this.pending = {};
 

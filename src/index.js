@@ -83,6 +83,11 @@ const locizeLastUsed = {
   submit: function() {
     if (!this.isAllowed) return;
     if (this.submitting) return this.submit();
+
+    // missing options
+    const isMissing = utils.isMissingOption(this.options, ['projectId', 'version', 'apiKey', 'referenceLng'])
+    if (isMissing) return callback(new Error(isMissing));
+
     this.submitting = this.pending;
     this.pending = {};
 
