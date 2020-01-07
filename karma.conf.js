@@ -3,16 +3,18 @@
 module.exports = function(karma) {
   karma.set({
 
-    frameworks: [ 'mocha', 'chai', 'sinon', 'browserify' ],
+    frameworks: [ 'mocha', 'chai', /*'sinon'*/, 'browserify' ],
 
     files: [
       //'vendor/external.js',
       'test/**/*.spec.js',
       { pattern: 'test/locales/**/*.json*', watched: true, included: false, served: true},
+      { pattern: 'test/languages/**/*.json*', watched: true, included: false, served: true},
     ],
 
     proxies: {
-      '/locales': 'http://localhost:9876/base/test/locales'
+      '/locales': 'http://localhost:9876/base/test/locales',
+      '/languages': 'http://localhost:9876/base/test/languages'
     },
 
     reporters: [ 'spec'/*, 'coverage' */],
@@ -41,10 +43,12 @@ module.exports = function(karma) {
     // browserify configuration
     browserify: {
       debug: true,
-      transform: [require('browserify-istanbul')({
-        instrumenter: require('isparta'),
-        ignore: ['**/test/**']
-      }), 'babelify']
+      transform: [
+        'babelify',
+        require('browserify-istanbul')({
+          ignore: ['**/test/**']
+        }),
+      ]
     },
 
     coverageReporter: {

@@ -1,3 +1,10 @@
+### 2.0.0
+
+- using the new `locize.app` domain replacing the deprecated `locize.io` domain
+- updated dev dependencies
+- update build process
+- remove bower stuff
+
 ### 1.1.1
 
 - warn for missing options
