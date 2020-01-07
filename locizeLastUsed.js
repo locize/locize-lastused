@@ -91,7 +91,7 @@
 
   function getDefaults() {
     return {
-      lastUsedPath: 'https://api.locize.io/used/{{projectId}}/{{version}}/{{lng}}/{{ns}}',
+      lastUsedPath: 'https://api.locize.app/used/{{projectId}}/{{version}}/{{lng}}/{{ns}}',
       referenceLng: 'en',
       crossDomain: true,
       setContentTypeJSON: false,
