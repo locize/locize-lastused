@@ -1,3 +1,7 @@
+### 3.0.2
+
+- fix for bundlers like rollup
+
 ### 3.0.0
 
 - complete refactoring to make this module universal (replaces locize-node-lastused)
