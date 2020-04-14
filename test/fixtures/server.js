@@ -1,3 +1,4 @@
+import expect from 'expect.js'
 import jsonServer from 'json-server'
 let js
 
@@ -7,6 +8,7 @@ const server = (done) => {
   js = jsonServer.create()
 
   js.post('/used/test/latest/en/transl', (req, res) => {
+    expect(req.body).not.to.eql({})
     res.jsonp({
       all: 'ok'
     })
