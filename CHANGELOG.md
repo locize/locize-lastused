@@ -1,3 +1,7 @@
+### 3.0.0
+
+- complete refactoring to make this module universal (replaces locize-node-lastused)
+
 ### 2.0.0
 
 - using the new `locize.app` domain replacing the deprecated `locize.io` domain

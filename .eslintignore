@@ -1,3 +1,7 @@
-**/dist/*
-**/node_modules/*
-**/*.min.*
+/build
+node_modules
+/example
+/cjs
+/dist
+/locizeLastUsed.js
+/locizeLastUsed.min.js

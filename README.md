@@ -45,8 +45,11 @@ $ npm install locize-lastused
 Options can be passed in by setting options.locizeLastUsed in i18next.init:
 
 ```js
-import i18next from "i18next";
-import locizeLastUsed from "locize-lastused";
+import i18next from 'i18next';
+import locizeLastUsed from 'locize-lastused';
+// or
+const i18next = require('i18next');
+const locizeLastUsed = require('locize-lastused');
 
 i18next.use(locizeLastUsed).init({
   locizeLastUsed: options
@@ -60,7 +63,7 @@ i18next.use(locizeLastUsed).init({
 Directly call locizeLastUsed.init:
 
 ```js
-import locizeLastUsed from "locize-lastused";
+import locizeLastUsed from 'locize-lastused';
 
 locizeLastUsed.init(options);
 ```
@@ -68,7 +71,7 @@ locizeLastUsed.init(options);
 then call used function with namespace and key:
 
 ```js
-import locizeLastUsed from "locize-lastused";
+import locizeLastUsed from 'locize-lastused';
 
-locizeLastUsed.used("myNamespace", "myKey.as.in.locize");
+locizeLastUsed.used('myNamespace', 'myKey.as.in.locize');
 ```
