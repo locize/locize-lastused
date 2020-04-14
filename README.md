@@ -6,7 +6,7 @@ This is an i18next plugin or standalone scriot to be used for [locize](http://lo
 
 # Getting started
 
-Source can be loaded via [npm](https://www.npmjs.com/package/locize-lastused) or [downloaded](https://cdn.rawgit.com/locize/locize-lastused/master/locize-lastusedd.min.js) from this repo.
+Source can be loaded via [npm](https://www.npmjs.com/package/locize-lastused) or [downloaded](https://cdn.rawgit.com/locize/locize-lastused/master/locizeLastUsed.min.js) from this repo.
 
 ```
 # npm package
