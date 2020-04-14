@@ -217,7 +217,7 @@ var requestWithXmlHttpRequest = function requestWithXmlHttpRequest(options, url,
       });
     };
 
-    x.send(payload && Array.isArray(payload) ? JSON.stringify(payload) : payload);
+    x.send(JSON.stringify(payload));
   } catch (e) {
     console && console.log(e);
   }
