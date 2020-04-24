@@ -1,3 +1,7 @@
+### 3.0.2
+
+- fix for react-native
+
 ### 3.0.1
 
 - fix for bundlers like rollup
