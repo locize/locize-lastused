@@ -1,3 +1,7 @@
+### 3.0.4
+
+- fix exports for react-native
+
 ### 3.0.3
 
 - dedicated export for node v14

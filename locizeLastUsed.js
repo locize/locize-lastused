@@ -52,7 +52,7 @@ var getDefaults = function getDefaults() {
 var locizeLastUsed = {
   init: function init(options) {
     var isI18next = options.t && typeof options.t === 'function';
-    this.options = isI18next ? _objectSpread({}, getDefaults(), {}, this.options, {}, options.options.locizeLastUsed) : _objectSpread({}, getDefaults(), {}, this.options, {}, options);
+    this.options = isI18next ? _objectSpread(_objectSpread(_objectSpread({}, getDefaults()), this.options), options.options.locizeLastUsed) : _objectSpread(_objectSpread(_objectSpread({}, getDefaults()), this.options), options);
     var hostname = typeof window !== 'undefined' && window.location && window.location.hostname;
 
     if (hostname) {
@@ -114,15 +114,15 @@ var locizeLastUsed = {
 
     namespaces.forEach(function (ns) {
       var keys = Object.keys(_this3.submitting[ns]);
-      var url = (0, _utils.replaceIn)(_this3.options.lastUsedPath, ['projectId', 'version', 'lng', 'ns'], _objectSpread({}, _this3.options, {
+      var url = (0, _utils.replaceIn)(_this3.options.lastUsedPath, ['projectId', 'version', 'lng', 'ns'], _objectSpread(_objectSpread({}, _this3.options), {}, {
         lng: _this3.options.referenceLng,
         ns: ns
       }));
 
       if (keys.length) {
-        (0, _request["default"])(_objectSpread({}, {
+        (0, _request["default"])(_objectSpread(_objectSpread({}, {
           authorize: true
-        }, {}, _this3.options), url, keys, doneOne);
+        }), _this3.options), url, keys, doneOne);
       } else {
         doneOne();
       }
