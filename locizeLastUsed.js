@@ -31,12 +31,6 @@ var _request = _interopRequireDefault(require("./request.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 var getDefaults = function getDefaults() {
   return {
     lastUsedPath: 'https://api.locize.app/used/{{projectId}}/{{version}}/{{lng}}/{{ns}}',
@@ -52,7 +46,7 @@ var getDefaults = function getDefaults() {
 var locizeLastUsed = {
   init: function init(options) {
     var isI18next = options.t && typeof options.t === 'function';
-    this.options = isI18next ? _objectSpread(_objectSpread(_objectSpread({}, getDefaults()), this.options), options.options.locizeLastUsed) : _objectSpread(_objectSpread(_objectSpread({}, getDefaults()), this.options), options);
+    this.options = isI18next ? (0, _utils.defaults)(options.options.locizeLastUsed, this.options || {}, getDefaults()) : (0, _utils.defaults)(options, this.options || {}, getDefaults());
     var hostname = typeof window !== 'undefined' && window.location && window.location.hostname;
 
     if (hostname) {
@@ -114,15 +108,15 @@ var locizeLastUsed = {
 
     namespaces.forEach(function (ns) {
       var keys = Object.keys(_this3.submitting[ns]);
-      var url = (0, _utils.replaceIn)(_this3.options.lastUsedPath, ['projectId', 'version', 'lng', 'ns'], _objectSpread(_objectSpread({}, _this3.options), {}, {
+      var url = (0, _utils.replaceIn)(_this3.options.lastUsedPath, ['projectId', 'version', 'lng', 'ns'], (0, _utils.defaults)({
         lng: _this3.options.referenceLng,
         ns: ns
-      }));
+      }, _this3.options));
 
       if (keys.length) {
-        (0, _request["default"])(_objectSpread(_objectSpread({}, {
+        (0, _request["default"])((0, _utils.defaults)({
           authorize: true
-        }), _this3.options), url, keys, doneOne);
+        }, _this3.options), url, keys, doneOne);
       } else {
         doneOne();
       }
@@ -280,9 +274,24 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.defaults = defaults;
 exports.debounce = debounce;
 exports.isMissingOption = isMissingOption;
 exports.replaceIn = replaceIn;
+var arr = [];
+var each = arr.forEach;
+var slice = arr.slice;
+
+function defaults(obj) {
+  each.call(slice.call(arguments, 1), function (source) {
+    if (source) {
+      for (var prop in source) {
+        if (obj[prop] === undefined) obj[prop] = source[prop];
+      }
+    }
+  });
+  return obj;
+}
 
 function debounce(func, wait, immediate) {
   var timeout;
