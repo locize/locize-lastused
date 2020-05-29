@@ -1,3 +1,7 @@
+### 3.0.6
+
+- fix for non-fetch browsers using locizeLastUsed.js
+
 ### 3.0.5
 
 - replace spread operator with defaults function
