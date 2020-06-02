@@ -1,3 +1,7 @@
+### 3.0.7
+
+- do not try to load node-fetch in browser
+
 ### 3.0.6
 
 - fix for non-fetch browsers using locizeLastUsed.js
