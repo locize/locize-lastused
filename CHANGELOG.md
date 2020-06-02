@@ -1,3 +1,7 @@
+### 3.0.8
+
+- fix xhr response handling
+
 ### 3.0.7
 
 - do not try to load node-fetch in browser
