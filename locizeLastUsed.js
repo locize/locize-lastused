@@ -23,13 +23,13 @@ if (typeof require !== 'undefined' && (typeof window === 'undefined' || typeof w
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = void 0;
+exports.default = void 0;
 
 var _utils = require("./utils.js");
 
 var _request = _interopRequireDefault(require("./request.js"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var getDefaults = function getDefaults() {
   return {
@@ -58,8 +58,7 @@ var locizeLastUsed = {
     this.submitting = null;
     this.pending = {};
     this.done = {};
-    this.submit = (0, _utils.debounce)(this.submit, this.options.debounceSubmit); // intercept
-
+    this.submit = (0, _utils.debounce)(this.submit, this.options.debounceSubmit);
     if (isI18next) this.interceptI18next(options);
   },
   interceptI18next: function interceptI18next(i18next) {
@@ -68,9 +67,7 @@ var locizeLastUsed = {
     var origGetResource = i18next.services.resourceStore.getResource;
 
     i18next.services.resourceStore.getResource = function (lng, ns, key, options) {
-      // call last used
-      if (key) _this.used(ns, key); // by pass orginal call
-
+      if (key) _this.used(ns, key);
       return origGetResource.call(i18next.services.resourceStore, lng, ns, key, options);
     };
   },
@@ -88,8 +85,7 @@ var locizeLastUsed = {
     var _this3 = this;
 
     if (!this.isAllowed) return callback && callback(new Error('not allowed'));
-    if (this.submitting) return this.submit(callback); // missing options
-
+    if (this.submitting) return this.submit(callback);
     var isMissing = (0, _utils.isMissingOption)(this.options, ['projectId', 'version', 'apiKey', 'referenceLng']);
     if (isMissing) return callback && callback(new Error(isMissing));
     this.submitting = this.pending;
@@ -114,7 +110,7 @@ var locizeLastUsed = {
       }, _this3.options));
 
       if (keys.length) {
-        (0, _request["default"])((0, _utils.defaults)({
+        (0, _request.default)((0, _utils.defaults)({
           authorize: true
         }, _this3.options), url, keys, doneOne);
       } else {
@@ -125,7 +121,7 @@ var locizeLastUsed = {
 };
 locizeLastUsed.type = '3rdParty';
 var _default = locizeLastUsed;
-exports["default"] = _default;
+exports.default = _default;
 module.exports = exports.default;
 },{"./request.js":3,"./utils.js":4}],3:[function(require,module,exports){
 (function (global){
@@ -136,13 +132,13 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = void 0;
+exports.default = void 0;
 
 var fetchNode = _interopRequireWildcard(require("./getFetch.js"));
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 var fetchApi;
 
@@ -174,9 +170,8 @@ if (typeof ActiveXObject === 'function') {
   }
 }
 
-if (!fetchApi && fetchNode && !XmlHttpRequestApi && !ActiveXObjectApi) fetchApi = fetchNode["default"] || fetchNode; // because of strange export
-
-if (typeof fetchApi !== 'function') fetchApi = undefined; // fetch api stuff
+if (!fetchApi && fetchNode && !XmlHttpRequestApi && !ActiveXObjectApi) fetchApi = fetchNode.default || fetchNode;
+if (typeof fetchApi !== 'function') fetchApi = undefined;
 
 var requestWithFetch = function requestWithFetch(options, url, payload, callback) {
   fetchApi(url, {
@@ -198,10 +193,9 @@ var requestWithFetch = function requestWithFetch(options, url, payload, callback
         data: data,
         resourceNotExisting: resourceNotExisting
       });
-    })["catch"](callback);
-  })["catch"](callback);
-}; // xml http request stuff
-
+    }).catch(callback);
+  }).catch(callback);
+};
 
 var requestWithXmlHttpRequest = function requestWithXmlHttpRequest(options, url, payload, callback) {
   try {
@@ -251,22 +245,16 @@ var request = function request(options, url, payload, callback) {
   callback = callback || function () {};
 
   if (fetchApi) {
-    // use fetch api
     return requestWithFetch(options, url, payload, callback);
   }
 
   if (typeof XMLHttpRequest === 'function' || typeof ActiveXObject === 'function') {
-    // use xml http request
     return requestWithXmlHttpRequest(options, url, payload, callback);
-  } // import('node-fetch').then((fetch) => {
-  //   fetchApi = fetch.default || fetch // because of strange export of node-fetch
-  //   requestWithFetch(options, url, payload, callback)
-  // }).catch(callback)
-
+  }
 };
 
 var _default = request;
-exports["default"] = _default;
+exports.default = _default;
 module.exports = exports.default;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./getFetch.js":1}],4:[function(require,module,exports){

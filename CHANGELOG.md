@@ -1,3 +1,7 @@
+### 3.0.9
+
+- transpile also esm
+
 ### 3.0.8
 
 - fix xhr response handling
