@@ -9,7 +9,7 @@ This is an i18next plugin or standalone scriot to be used for [locize](http://lo
 
 Source can be loaded via [npm](https://www.npmjs.com/package/locize-lastused) or [downloaded](https://cdn.rawgit.com/locize/locize-lastused/master/locizeLastUsed.min.js) from this repo.
 
-```
+```bash
 # npm package
 $ npm install locize-lastused
 ```
