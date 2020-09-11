@@ -1,3 +1,7 @@
+### 3.0.10
+
+- update dependencies
+
 ### 3.0.9
 
 - transpile also esm
