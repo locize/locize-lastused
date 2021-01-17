@@ -1,3 +1,7 @@
+### 3.0.11
+
+- XMLHttpRequest fix for ios < 9
+
 ### 3.0.10
 
 - update dependencies
