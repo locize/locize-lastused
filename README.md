@@ -5,6 +5,12 @@
 
 This is an i18next plugin or standalone scriot to be used for [locize](http://locize.com) service. It will update last used timestamps on reference keys from your locize project using xhr. It sets the last used date on your reference language's namespaces.
 
+# Troubleshooting
+
+**Seems not working**
+
+Per default only `localhost` is allowed to send last used information (to avoid using this feature accidentally in production). If you're not using `localhost` during development you will have to set the `allowedHosts: ['your.domain.tld']` for the options.
+
 # Getting started
 
 Source can be loaded via [npm](https://www.npmjs.com/package/locize-lastused) or [downloaded](https://cdn.rawgit.com/locize/locize-lastused/master/locizeLastUsed.min.js) from this repo.
