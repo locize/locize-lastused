@@ -10,14 +10,14 @@ if (typeof fetch === 'function') {
 }
 
 if (typeof require !== 'undefined' && (typeof window === 'undefined' || typeof window.document === 'undefined')) {
-  var f = fetchApi || require('node-fetch')
+  var f = fetchApi || require('cross-fetch')
   if (f.default) f = f.default
   exports.default = f
   module.exports = exports.default
 }
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"node-fetch":5}],2:[function(require,module,exports){
+},{"cross-fetch":5}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

@@ -1,3 +1,7 @@
+### 3.0.12
+
+- replace internal node-fetch with cross-fetch
+
 ### 3.0.11
 
 - XMLHttpRequest fix for ios < 9
