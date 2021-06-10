@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/locize-lastused.svg?style=flat-square)](https://www.npmjs.com/package/locize-lastused)
 [![David](https://img.shields.io/david/locize/locize-lastused.svg?style=flat-square)](https://david-dm.org/locize/locize-lastused)
 
-This is an i18next plugin or standalone scriot to be used for [locize](http://locize.com) service. It will update last used timestamps on reference keys from your locize project using xhr. It sets the last used date on your reference language's namespaces.
+This is an i18next plugin or standalone script to be used for [locize](http://locize.com) service. It will update last used timestamps on reference keys from your locize project using xhr. It sets the last used date on your reference language's namespaces.
 
 # Troubleshooting
 
