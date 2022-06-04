@@ -46,6 +46,27 @@ var getDefaults = function getDefaults() {
 var locizeLastUsed = {
   init: function init(options) {
     var isI18next = options.t && typeof options.t === 'function';
+
+    if (isI18next && !options.options.locizeLastUsed.projectId && options.options.backend.projectId) {
+      options.options.locizeLastUsed.projectId = options.options.backend.projectId;
+    }
+
+    if (isI18next && !options.options.locizeLastUsed.version && options.options.backend.version) {
+      options.options.locizeLastUsed.version = options.options.backend.version;
+    }
+
+    if (isI18next && !options.options.locizeLastUsed.apiKey && options.options.backend.apiKey) {
+      options.options.locizeLastUsed.apiKey = options.options.backend.apiKey;
+    }
+
+    if (isI18next && !options.options.locizeLastUsed.referenceLng && options.options.backend.referenceLng) {
+      options.options.locizeLastUsed.referenceLng = options.options.backend.referenceLng;
+    }
+
+    if (isI18next && !options.options.locizeLastUsed.referenceLng && options.options.fallbackLng) {
+      options.options.locizeLastUsed.referenceLng = options.options.fallbackLng;
+    }
+
     this.options = isI18next ? (0, _utils.defaults)(options.options.locizeLastUsed, this.options || {}, getDefaults()) : (0, _utils.defaults)(options, this.options || {}, getDefaults());
     var hostname = typeof window !== 'undefined' && window.location && window.location.hostname;
 

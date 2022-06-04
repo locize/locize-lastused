@@ -8,17 +8,18 @@ const yourOptions = {
   preload: ['en', 'de'],
   fallbackLng: 'en',
   backend: {
-    referenceLng: 'en',
-    projectId: 'c55b9812-f5d2-4856-adba-c750afc82bb3',
+    // referenceLng: 'en',
+    projectId: '3d0aa5aa-4660-4154-b6d9-907dbef10bb2',
     apiKey: '51837bfd-ed1f-4ed4-afb6-dd3049f6ee7f',
 		// version: 'staging',
     // loadPath: 'https://api.locize.app/2596e805-2ce2-4e21-9481-ee62202ababd/{{version}}/{{lng}}/{{ns}}',
     // addPath: 'https://api.locize.app/missing/2596e805-2ce2-4e21-9481-ee62202ababd/{{version}}/{{lng}}/{{ns}}'
   },
   locizeLastUsed: {
-    referenceLng: 'en',
-    projectId: 'c55b9812-f5d2-4856-adba-c750afc82bb3',
-    apiKey: '51837bfd-ed1f-4ed4-afb6-dd3049f6ee7f',
+    // referenceLng: 'en',
+    // projectId: '3d0aa5aa-4660-4154-b6d9-907dbef10bb2',
+    // apiKey: '51837bfd-ed1f-4ed4-afb6-dd3049f6ee7f',
+    debounceSubmit: 6000
   }
 };
 
