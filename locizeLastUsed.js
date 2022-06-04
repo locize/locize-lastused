@@ -63,8 +63,8 @@ var locizeLastUsed = {
       options.options.locizeLastUsed.referenceLng = options.options.backend.referenceLng;
     }
 
-    if (isI18next && !options.options.locizeLastUsed.referenceLng && options.options.fallbackLng) {
-      options.options.locizeLastUsed.referenceLng = options.options.fallbackLng;
+    if (isI18next && !options.options.locizeLastUsed.referenceLng && options.options.fallbackLng && Array.isArray(options.options.fallbackLng) && options.options.fallbackLng[0] !== 'dev') {
+      options.options.locizeLastUsed.referenceLng = options.options.fallbackLng[0];
     }
 
     this.options = isI18next ? (0, _utils.defaults)(options.options.locizeLastUsed, this.options || {}, getDefaults()) : (0, _utils.defaults)(options, this.options || {}, getDefaults());
