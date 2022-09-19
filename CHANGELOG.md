@@ -1,3 +1,7 @@
+### 3.1.1
+
+- error if no fetch and no xhr implementation found
+
 ### 3.1.0
 
 - if options not passed, try to use the one of i18next-locize-backend
