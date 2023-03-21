@@ -82,3 +82,24 @@ import locizeLastUsed from 'locize-lastused';
 
 locizeLastUsed.used('myNamespace', 'myKey.as.in.locize');
 ```
+
+## TypeScript
+
+To properly type the options, you can import the `LocizeLastusedOptions` interface and use it as a generic type parameter to the i18next's `init` method, e.g.:
+
+```ts
+import i18n from 'i18next'
+import LocizeLastusedPlugin, { LocizeLastusedOptions } from 'i18next-locize-backend'
+
+i18n
+  .use(LocizeLastusedPlugin)
+  .init<LocizeLastusedOptions>({
+    locizeLastUsed: {
+      // locize lastused options
+      projectId: '1234123424234',
+      apiKey: 'my-api-key'
+    },
+
+    // other i18next options
+  })
+```
