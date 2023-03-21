@@ -26,13 +26,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-
 var _utils = require("./utils.js");
-
 var _request = _interopRequireDefault(require("./request.js"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 var getDefaults = function getDefaults() {
   return {
     lastUsedPath: 'https://api.locize.app/used/{{projectId}}/{{version}}/{{lng}}/{{ns}}',
@@ -44,40 +40,31 @@ var getDefaults = function getDefaults() {
     allowedHosts: ['localhost']
   };
 };
-
 var locizeLastUsed = {
   init: function init(options) {
     var isI18next = options.t && typeof options.t === 'function';
-
     if (isI18next && !options.options.locizeLastUsed.projectId && options.options.backend.projectId) {
       options.options.locizeLastUsed.projectId = options.options.backend.projectId;
     }
-
     if (isI18next && !options.options.locizeLastUsed.version && options.options.backend.version) {
       options.options.locizeLastUsed.version = options.options.backend.version;
     }
-
     if (isI18next && !options.options.locizeLastUsed.apiKey && options.options.backend.apiKey) {
       options.options.locizeLastUsed.apiKey = options.options.backend.apiKey;
     }
-
     if (isI18next && !options.options.locizeLastUsed.referenceLng && options.options.backend.referenceLng) {
       options.options.locizeLastUsed.referenceLng = options.options.backend.referenceLng;
     }
-
     if (isI18next && !options.options.locizeLastUsed.referenceLng && options.options.fallbackLng && Array.isArray(options.options.fallbackLng) && options.options.fallbackLng[0] !== 'dev') {
       options.options.locizeLastUsed.referenceLng = options.options.fallbackLng[0];
     }
-
     this.options = isI18next ? (0, _utils.defaults)(options.options.locizeLastUsed, this.options || {}, getDefaults()) : (0, _utils.defaults)(options, this.options || {}, getDefaults());
     var hostname = typeof window !== 'undefined' && window.location && window.location.hostname;
-
     if (hostname) {
       this.isAllowed = this.options.allowedHosts.indexOf(hostname) > -1;
     } else {
       this.isAllowed = true;
     }
-
     this.submitting = null;
     this.pending = {};
     this.done = {};
@@ -86,9 +73,7 @@ var locizeLastUsed = {
   },
   interceptI18next: function interceptI18next(i18next) {
     var _this = this;
-
     var origGetResource = i18next.services.resourceStore.getResource;
-
     i18next.services.resourceStore.getResource = function (lng, ns, key, options) {
       if (key) _this.used(ns, key);
       return origGetResource.call(i18next.services.resourceStore, lng, ns, key, options);
@@ -96,7 +81,6 @@ var locizeLastUsed = {
   },
   used: function used(ns, key, callback) {
     var _this2 = this;
-
     ['pending', 'done'].forEach(function (k) {
       if (_this2.done[ns] && _this2.done[ns][key]) return;
       if (!_this2[k][ns]) _this2[k][ns] = {};
@@ -106,7 +90,6 @@ var locizeLastUsed = {
   },
   submit: function submit(callback) {
     var _this3 = this;
-
     if (!this.isAllowed) return callback && callback(new Error('not allowed'));
     if (this.submitting) return this.submit(callback);
     var isMissing = (0, _utils.isMissingOption)(this.options, ['projectId', 'version', 'apiKey', 'referenceLng']);
@@ -115,23 +98,19 @@ var locizeLastUsed = {
     this.pending = {};
     var namespaces = Object.keys(this.submitting);
     var todo = namespaces.length;
-
     var doneOne = function doneOne(err) {
       todo--;
-
       if (!todo) {
         _this3.submitting = null;
         if (callback) callback(err);
       }
     };
-
     namespaces.forEach(function (ns) {
       var keys = Object.keys(_this3.submitting[ns]);
       var url = (0, _utils.replaceIn)(_this3.options.lastUsedPath, ['projectId', 'version', 'lng', 'ns'], (0, _utils.defaults)({
         lng: _this3.options.referenceLng,
         ns: ns
       }, _this3.options));
-
       if (keys.length) {
         (0, _request.default)((0, _utils.defaults)({
           authorize: true
@@ -154,27 +133,21 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-
 var fetchNode = _interopRequireWildcard(require("./getFetch.js"));
-
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
 var fetchApi;
-
 if (typeof fetch === 'function') {
   if (typeof global !== 'undefined' && global.fetch) {
     fetchApi = global.fetch;
   } else if (typeof window !== 'undefined' && window.fetch) {
     fetchApi = window.fetch;
+  } else {
+    fetchApi = fetch;
   }
 }
-
 var XmlHttpRequestApi;
-
 if (typeof XMLHttpRequest === 'function' || (typeof XMLHttpRequest === "undefined" ? "undefined" : _typeof(XMLHttpRequest)) === 'object') {
   if (typeof global !== 'undefined' && global.XMLHttpRequest) {
     XmlHttpRequestApi = global.XMLHttpRequest;
@@ -182,9 +155,7 @@ if (typeof XMLHttpRequest === 'function' || (typeof XMLHttpRequest === "undefine
     XmlHttpRequestApi = window.XMLHttpRequest;
   }
 }
-
 var ActiveXObjectApi;
-
 if (typeof ActiveXObject === 'function') {
   if (typeof global !== 'undefined' && global.ActiveXObject) {
     ActiveXObjectApi = global.ActiveXObject;
@@ -192,10 +163,8 @@ if (typeof ActiveXObject === 'function') {
     ActiveXObjectApi = window.ActiveXObject;
   }
 }
-
 if (!fetchApi && fetchNode && !XmlHttpRequestApi && !ActiveXObjectApi) fetchApi = fetchNode.default || fetchNode;
 if (typeof fetchApi !== 'function') fetchApi = undefined;
-
 var requestWithFetch = function requestWithFetch(options, url, payload, callback) {
   fetchApi(url, {
     method: payload ? 'POST' : 'GET',
@@ -219,31 +188,24 @@ var requestWithFetch = function requestWithFetch(options, url, payload, callback
     }).catch(callback);
   }).catch(callback);
 };
-
 var requestWithXmlHttpRequest = function requestWithXmlHttpRequest(options, url, payload, callback) {
   try {
     var x;
-
     if (XmlHttpRequestApi) {
       x = new XmlHttpRequestApi();
     } else {
       x = new ActiveXObjectApi('MSXML2.XMLHTTP.3.0');
     }
-
     x.open(payload ? 'POST' : 'GET', url, 1);
-
     if (!options.crossDomain) {
       x.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     }
-
     if (options.authorize && options.apiKey) {
       x.setRequestHeader('Authorization', options.apiKey);
     }
-
     if (payload || options.setContentTypeJSON) {
       x.setRequestHeader('Content-Type', 'application/json');
     }
-
     x.onreadystatechange = function () {
       var resourceNotExisting = x.getResponseHeader('x-cache') === 'Error from cloudfront';
       x.readyState > 3 && callback(x.status >= 400 ? x.statusText : null, {
@@ -252,32 +214,25 @@ var requestWithXmlHttpRequest = function requestWithXmlHttpRequest(options, url,
         resourceNotExisting: resourceNotExisting
       });
     };
-
     x.send(JSON.stringify(payload));
   } catch (e) {
     console && console.log(e);
   }
 };
-
 var request = function request(options, url, payload, callback) {
   if (typeof payload === 'function') {
     callback = payload;
     payload = undefined;
   }
-
   callback = callback || function () {};
-
   if (fetchApi) {
     return requestWithFetch(options, url, payload, callback);
   }
-
   if (typeof XMLHttpRequest === 'function' || (typeof XMLHttpRequest === "undefined" ? "undefined" : _typeof(XMLHttpRequest)) === 'object' || typeof ActiveXObject === 'function') {
     return requestWithXmlHttpRequest(options, url, payload, callback);
   }
-
   callback(new Error('No fetch and no xhr implementation found!'));
 };
-
 var _default = request;
 exports.default = _default;
 module.exports = exports.default;
@@ -295,7 +250,6 @@ exports.replaceIn = replaceIn;
 var arr = [];
 var each = arr.forEach;
 var slice = arr.slice;
-
 function defaults(obj) {
   each.call(slice.call(arguments, 1), function (source) {
     if (source) {
@@ -306,39 +260,32 @@ function defaults(obj) {
   });
   return obj;
 }
-
 function debounce(func, wait, immediate) {
   var timeout;
   return function () {
     var context = this;
     var args = arguments;
-
     var later = function later() {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
-
     var callNow = immediate && !timeout;
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
 }
-
 function isMissingOption(obj, props) {
   return props.reduce(function (mem, p) {
     if (mem) return mem;
-
     if (!obj || !obj[p] || typeof obj[p] !== 'string' || !obj[p].toLowerCase() === p.toLowerCase()) {
       var err = "i18next-lastused :: got \"".concat(obj[p], "\" in options for ").concat(p, " which is invalid.");
       console.warn(err);
       return err;
     }
-
     return false;
   }, false);
 }
-
 function replaceIn(str, arr, options) {
   var ret = str;
   arr.forEach(function (s) {

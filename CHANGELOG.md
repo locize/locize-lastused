@@ -1,3 +1,7 @@
+### 3.2.0
+
+- add type definitions
+
 ### 3.1.1
 
 - error if no fetch and no xhr implementation found
