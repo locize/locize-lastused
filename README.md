@@ -89,7 +89,7 @@ To properly type the options, you can import the `LocizeLastusedOptions` interfa
 
 ```ts
 import i18n from 'i18next'
-import LocizeLastusedPlugin, { LocizeLastusedOptions } from 'i18next-locize-backend'
+import LocizeLastusedPlugin, { LocizeLastusedOptions } from 'locize-lastused'
 
 i18n
   .use(LocizeLastusedPlugin)
