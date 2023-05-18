@@ -1,3 +1,7 @@
+### 3.2.1
+
+- fix for types moduleResolution "node16"
+
 ### 3.2.0
 
 - add type definitions
