@@ -166,14 +166,7 @@ if (typeof ActiveXObject === 'function') {
 if (!fetchApi && fetchNode && !XmlHttpRequestApi && !ActiveXObjectApi) fetchApi = fetchNode.default || fetchNode;
 if (typeof fetchApi !== 'function') fetchApi = undefined;
 var requestWithFetch = function requestWithFetch(options, url, payload, callback) {
-  fetchApi(url, {
-    method: payload ? 'POST' : 'GET',
-    body: payload ? JSON.stringify(payload) : undefined,
-    headers: {
-      Authorization: options.authorize && options.apiKey ? options.apiKey : undefined,
-      'Content-Type': 'application/json'
-    }
-  }).then(function (response) {
+  var resolver = function resolver(response) {
     var resourceNotExisting = response.headers && response.headers.get('x-cache') === 'Error from cloudfront';
     if (!response.ok) return callback(response.statusText || 'Error', {
       status: response.status,
@@ -186,7 +179,26 @@ var requestWithFetch = function requestWithFetch(options, url, payload, callback
         resourceNotExisting: resourceNotExisting
       });
     }).catch(callback);
-  }).catch(callback);
+  };
+  if (typeof fetch === 'function') {
+    fetch(url, {
+      method: payload ? 'POST' : 'GET',
+      body: payload ? JSON.stringify(payload) : undefined,
+      headers: {
+        Authorization: options.authorize && options.apiKey ? options.apiKey : undefined,
+        'Content-Type': 'application/json'
+      }
+    }).then(resolver).catch(callback);
+  } else {
+    fetchApi(url, {
+      method: payload ? 'POST' : 'GET',
+      body: payload ? JSON.stringify(payload) : undefined,
+      headers: {
+        Authorization: options.authorize && options.apiKey ? options.apiKey : undefined,
+        'Content-Type': 'application/json'
+      }
+    }).then(resolver).catch(callback);
+  }
 };
 var requestWithXmlHttpRequest = function requestWithXmlHttpRequest(options, url, payload, callback) {
   try {
