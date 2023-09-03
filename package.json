@@ -61,6 +61,7 @@
     "mocha": "10.2.0",
     "tslint": "5.20.1",
     "tsd": "0.28.1",
+    "typescript": "5.0.4",
     "uglify-js": "3.17.4",
     "xmlhttprequest": "1.8.0"
   },
