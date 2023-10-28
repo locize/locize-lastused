@@ -1,3 +1,7 @@
+### 3.3.1
+
+- fix for browser usage
+
 ### 3.3.0
 
 - update deps
