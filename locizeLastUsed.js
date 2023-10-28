@@ -184,7 +184,7 @@ var requestWithFetch = function requestWithFetch(options, url, payload, callback
     'Content-Type': 'application/json'
   };
   if (typeof window === 'undefined' && typeof global !== 'undefined' && typeof global.process !== 'undefined' && global.process.versions && global.process.versions.node) {
-    headers['User-Agent'] = "i18next-locize-backend (node/".concat(global.process.version, "; ").concat(global.process.platform, " ").concat(global.process.arch, ")");
+    headers['User-Agent'] = "locize-lastused (node/".concat(global.process.version, "; ").concat(global.process.platform, " ").concat(global.process.arch, ")");
   }
   if (typeof fetch === 'function') {
     fetch(url, {
