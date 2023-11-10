@@ -1,3 +1,7 @@
+### 3.4.0
+
+- fix: separate cjs and mjs typings
+
 ### 3.3.2
 
 - fix for browser usage
