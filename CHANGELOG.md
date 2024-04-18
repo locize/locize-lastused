@@ -1,3 +1,7 @@
+### 3.4.1
+
+- fix: remove typeof window.document === 'undefined' check which deopt bundle optimization
+
 ### 3.4.0
 
 - fix: separate cjs and mjs typings
