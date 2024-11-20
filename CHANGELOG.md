@@ -1,3 +1,7 @@
+### 3.5.0
+
+- fix for Deno 2 and removal of unnecessary .cjs file
+
 ### 3.4.1
 
 - fix: remove typeof window.document === 'undefined' check which deopt bundle optimization

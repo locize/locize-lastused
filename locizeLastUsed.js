@@ -1,25 +1,4 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.locizeLastUsed = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-(function (global){(function (){
-var fetchApi
-if (typeof fetch === 'function') {
-  if (typeof global !== 'undefined' && global.fetch) {
-    fetchApi = global.fetch
-  } else if (typeof window !== 'undefined' && window.fetch) {
-    fetchApi = window.fetch
-  } else {
-    fetchApi = fetch
-  }
-}
-
-if (typeof require !== 'undefined' && typeof window === 'undefined') {
-  var f = fetchApi || require('cross-fetch')
-  if (f.default) f = f.default
-  exports.default = f
-  module.exports = exports.default
-}
-
-}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"cross-fetch":5}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28,7 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _utils = require("./utils.js");
 var _request = _interopRequireDefault(require("./request.js"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 var getDefaults = function getDefaults() {
   return {
     lastUsedPath: 'https://api.locize.app/used/{{projectId}}/{{version}}/{{lng}}/{{ns}}',
@@ -124,7 +103,7 @@ var locizeLastUsed = {
 locizeLastUsed.type = '3rdParty';
 var _default = exports.default = locizeLastUsed;
 module.exports = exports.default;
-},{"./request.js":3,"./utils.js":4}],3:[function(require,module,exports){
+},{"./request.js":2,"./utils.js":3}],2:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
@@ -132,9 +111,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var fetchNode = _interopRequireWildcard(require("./getFetch.js"));
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 var fetchApi;
 if (typeof fetch === 'function') {
@@ -162,8 +140,12 @@ if (typeof ActiveXObject === 'function') {
     ActiveXObjectApi = window.ActiveXObject;
   }
 }
-if (!fetchApi && fetchNode && !XmlHttpRequestApi && !ActiveXObjectApi) fetchApi = fetchNode.default || fetchNode;
 if (typeof fetchApi !== 'function') fetchApi = undefined;
+if (!fetchApi && !XmlHttpRequestApi && !ActiveXObjectApi) {
+  try {
+    fetchApi = require('cross-fetch');
+  } catch (e) {}
+}
 var requestWithFetch = function requestWithFetch(options, url, payload, callback) {
   var resolver = function resolver(response) {
     var resourceNotExisting = response.headers && response.headers.get('x-cache') === 'Error from cloudfront';
@@ -202,12 +184,7 @@ var requestWithFetch = function requestWithFetch(options, url, payload, callback
 };
 var requestWithXmlHttpRequest = function requestWithXmlHttpRequest(options, url, payload, callback) {
   try {
-    var x;
-    if (XmlHttpRequestApi) {
-      x = new XmlHttpRequestApi();
-    } else {
-      x = new ActiveXObjectApi('MSXML2.XMLHTTP.3.0');
-    }
+    var x = XmlHttpRequestApi ? new XmlHttpRequestApi() : new ActiveXObjectApi('MSXML2.XMLHTTP.3.0');
     x.open(payload ? 'POST' : 'GET', url, 1);
     if (!options.crossDomain) {
       x.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -248,7 +225,7 @@ var request = function request(options, url, payload, callback) {
 var _default = exports.default = request;
 module.exports = exports.default;
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./getFetch.js":1}],4:[function(require,module,exports){
+},{"cross-fetch":4}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -305,7 +282,7 @@ function replaceIn(str, arr, options) {
   });
   return ret;
 }
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 
-},{}]},{},[2])(2)
+},{}]},{},[1])(1)
 });
