@@ -1,4 +1,4 @@
-### 3.5.0
+### 4.0.0
 
 - fix for Deno 2 and removal of unnecessary .cjs file
 - for esm build environments not supporting top-level await, you should import the `locize-lastused/cjs` export or stay at v3.4.1
