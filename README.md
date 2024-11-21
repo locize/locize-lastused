@@ -1,7 +1,5 @@
 [![Actions](https://github.com/locize/locize-lastused/workflows/node/badge.svg)](https://github.com/locize/locize-lastused/actions?query=workflow%3Anode)
-[![Travis](https://img.shields.io/travis/locize/locize-lastused/master.svg?style=flat-square)](https://travis-ci.org/locize/locize-lastused)
 [![npm version](https://img.shields.io/npm/v/locize-lastused.svg?style=flat-square)](https://www.npmjs.com/package/locize-lastused)
-[![David](https://img.shields.io/david/locize/locize-lastused.svg?style=flat-square)](https://david-dm.org/locize/locize-lastused)
 
 This is an i18next plugin or standalone script to be used for [locize](http://locize.com) service. It will update last used timestamps on reference keys (so only on your reference/source language) from your locize project using http requests.
 
