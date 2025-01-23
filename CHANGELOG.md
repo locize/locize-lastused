@@ -1,3 +1,7 @@
+### 3.4.2
+
+- optimize fetchApi selector [backported]
+
 ### 3.4.1
 
 - fix: remove typeof window.document === 'undefined' check which deopt bundle optimization
