@@ -11,6 +11,10 @@
 - fix for Deno 2 and removal of unnecessary .cjs file
 - for esm build environments not supporting top-level await, you should import the `locize-lastused/cjs` export or stay at v3.4.1
 
+### 3.4.3
+
+- optimize fetchApi selector [backported]
+
 ### 3.4.1
 
 - fix: remove typeof window.document === 'undefined' check which deopt bundle optimization
