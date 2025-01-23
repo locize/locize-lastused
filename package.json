@@ -39,7 +39,7 @@
     "url": "git@github.com:locize/locize-lastused.git"
   },
   "dependencies": {
-    "cross-fetch": "4.0.0"
+    "cross-fetch": "4.1.0"
   },
   "devDependencies": {
     "@babel/cli": "7.25.9",
