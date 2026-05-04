@@ -1,6 +1,6 @@
 {
   "name": "locize-lastused",
-  "version": "4.0.2",
+  "version": "5.0.0",
   "description": "Using API lastUsed using in node.js, in the browser and for deno.",
   "type": "module",
   "sideEffects": false,
