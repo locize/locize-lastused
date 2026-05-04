@@ -11,7 +11,9 @@ Per default only `localhost` is allowed to send last used information (to avoid 
 
 # Getting started
 
-Source can be loaded via [npm](https://www.npmjs.com/package/locize-lastused) or [downloaded](https://cdn.rawgit.com/locize/locize-lastused/master/locizeLastUsed.min.js) from this repo.
+Source can be loaded via [npm](https://www.npmjs.com/package/locize-lastused) or [downloaded](https://cdn.jsdelivr.net/npm/locize-lastused@5/locizeLastUsed.min.js) from this repo.
+
+> **v5 requires native `fetch`.** Node ≥ 18, all modern browsers, Deno, and Bun ship `fetch` by default — no extra setup needed. v5 dropped the bundled `cross-fetch` fallback that v4 used. For runtimes without native `fetch`, install a ponyfill yourself before loading this module, or stay on v4.
 
 ```bash
 # npm package

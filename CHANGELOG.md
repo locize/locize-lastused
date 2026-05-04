@@ -1,3 +1,14 @@
+### 5.0.0
+
+- BREAKING: drop `cross-fetch` dependency. `locize-lastused` now requires a host-provided `fetch`. This is available in Node ≥ 18 (stable since Node 21), all modern browsers, Deno, and Bun. For runtimes without native `fetch`, install a ponyfill yourself before loading this module, or stay on v4.x.
+- BREAKING: minimum Node version is now 18 (`engines.node = ">=18"`).
+- chore: simplified environment detection in `lib/request.js` — uses `globalThis` (with `global` / `window` fallbacks for legacy embedded runtimes) instead of separate `global.*` / `window.*` branches per API. XHR / ActiveXObject are still picked up if the host provides them, but no longer polyfilled.
+- chore: declared `"sideEffects": false` for better tree-shaking by downstream bundlers.
+- build: replaced babel + browserify + uglify-js with [`tsdown`](https://tsdown.dev) (rolldown + oxc). One config produces ESM, CJS, and the IIFE browser bundles. Drops `@babel/cli`, `@babel/core`, `@babel/preset-env`, `babel-plugin-add-module-exports`, `browserify`, `uglify-js`, the `fixcjs` rewrite hack, and the `--ignore cross-fetch` browserify flag. Side benefit: minified browser bundle shrinks from ~9 KB to ~4.8 KB.
+- build: ESM and CJS outputs are now bundled into a single `index.js` per format (previously one file per `lib/*.js` module). The package's `exports` map is unchanged, so this is invisible to consumers using documented entry points.
+- lint: replaced `eslint-config-standard` (+ five plugins) with [`neostandard`](https://github.com/neostandard/neostandard) and migrated to ESLint 9 flat config (`eslint.config.mjs`). Removed deprecated `tslint` and `dtslint` — `test:typescript` now runs `tsc --noEmit` plus `tsd`.
+- docs: bumped CDN download link in README from the dead `cdn.rawgit.com` (shut down in 2019) to a current `cdn.jsdelivr.net` URL pinned to `@5`. Added v5 migration callout.
+
 ### 4.0.2
 
 - optimize fetchApi selector

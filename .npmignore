@@ -13,6 +13,8 @@ bin
 package-lock.json
 README.md
 tsconfig.json
+tsdown.config.ts
+eslint.config.mjs
 bower.json
 gulpfile.js
 karma.conf.js
