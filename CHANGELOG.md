@@ -1,3 +1,7 @@
+### 5.0.1
+
+- a key the locize API refuses (401: no write access, e.g. a `readonly` key; 403: a plan limit) is refused again on every later submit, so after the first refusal lastused warns once in the console and stops sending for the page.
+
 ### 5.0.0
 
 - BREAKING: drop `cross-fetch` dependency. `locize-lastused` now requires a host-provided `fetch`. This is available in Node ≥ 18 (stable since Node 21), all modern browsers, Deno, and Bun. For runtimes without native `fetch`, install a ponyfill yourself before loading this module, or stay on v4.x.

@@ -9,6 +9,10 @@ This is an i18next plugin or standalone script to be used for [locize](http://lo
 
 Per default only `localhost` is allowed to send last used information (to avoid using this feature accidentally in production). If you're not using `localhost` during development you will have to set the `allowedHosts: ['your.domain.tld']` for the options.
 
+**Stopped with a console warning**
+
+If the locize API refuses the api key (401: the key has no write access, e.g. a `readonly` key; 403: a plan limit), lastused logs one warning in the console and sends nothing more on that page. Use a key with the role `user` or `admin`, on development or staging only.
+
 # Getting started
 
 Source can be loaded via [npm](https://www.npmjs.com/package/locize-lastused) or [downloaded](https://cdn.jsdelivr.net/npm/locize-lastused@5/locizeLastUsed.min.js) from this repo.
