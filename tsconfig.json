@@ -1,14 +1,12 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
-    "lib": ["es6", "dom"],
+    "module": "nodenext",
+    "target": "es2020",
+    "lib": ["es2020", "dom"],
     "jsx": "react",
-    "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noEmit": true,
-    "baseUrl": ".",
     "paths": { "locize-lastused": ["./index.d.mts"] },
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true

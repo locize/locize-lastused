@@ -2,7 +2,7 @@
 
 - types: the plugin now declares its own `locizeLastUsed` init option (it augments i18next's `CustomPluginOptions`), so `i18next.init({ locizeLastUsed: { ... } })` keeps type-checking when i18next 27 stops declaring that option in core. With i18next 26 core's own declaration still applies.
 - types: `LocizeLastusedOptions` now matches what the plugin reads: `apiKey` is optional (it falls back to `backend.apiKey`), `debounceSubmit` is added, and `allowedHosts` is a `readonly string[]` (a function was never supported at runtime).
-- chore: i18next devDependency updated to 26.7.1
+- chore: devDependencies updated (i18next 26.7.1, eslint 10, mocha 12, neostandard 0.14, tsd 0.33, tsdown 0.23, TypeScript 7); CI now tests on Node 22, 24 and 26, since the build tooling needs Node 22 or newer. The published code still runs on Node 18 or newer.
 
 ### 5.0.1
 

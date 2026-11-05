@@ -1,5 +1,5 @@
 var locizeLastUsed = (function() {
-	//#region lib/utils.js
+	// lib/utils.js
 	const arr = [];
 	const each = arr.forEach;
 	const slice = arr.slice;
@@ -45,8 +45,7 @@ var locizeLastUsed = (function() {
 		});
 		return ret;
 	}
-	//#endregion
-	//#region lib/request.js
+	// lib/request.js
 	const g = typeof globalThis !== "undefined" ? globalThis : typeof global !== "undefined" ? global : typeof window !== "undefined" ? window : void 0;
 	let fetchApi;
 	if (typeof fetch === "function") fetchApi = fetch;
@@ -114,8 +113,7 @@ var locizeLastUsed = (function() {
 		if (XmlHttpRequestApi || ActiveXObjectApi) return requestWithXmlHttpRequest(options, url, payload, callback);
 		callback(/* @__PURE__ */ new Error("No fetch and no xhr implementation found!"));
 	};
-	//#endregion
-	//#region lib/index.js
+	// lib/index.js
 	const getDefaults = () => {
 		return {
 			lastUsedPath: "https://api.locize.app/used/{{projectId}}/{{version}}/{{lng}}/{{ns}}",
@@ -202,6 +200,5 @@ var locizeLastUsed = (function() {
 		}
 	};
 	locizeLastUsed.type = "3rdParty";
-	//#endregion
 	return locizeLastUsed;
 })();

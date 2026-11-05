@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node: [ '24.x', '22.x', '20.x' ]
+        node: [ '26.x', '24.x', '22.x' ]
         # os: [ubuntu-latest, windows-latest, macOS-latest]
         os: [ubuntu-latest]
     steps:
@@ -20,10 +20,10 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
-      # node 20/22 ship npm 10.x, whose peer resolution crashes with
+      # node 22 ships npm 10.x, whose peer resolution crashes with
       # "Cannot read properties of null (reading 'edgesOut')" on a cold install.
       # This repo has no committed lockfile, so CI always takes that path.
-      # npm@11 (not @latest: npm 12 drops node 20) resolves the same tree fine.
+      # npm@11 (pinned to a known-good major) resolves the same tree fine.
       - run: npm install -g npm@11
       - run: npm install
       - run: npm test
