@@ -1,3 +1,9 @@
+### 5.1.0
+
+- types: the plugin now declares its own `locizeLastUsed` init option (it augments i18next's `CustomPluginOptions`), so `i18next.init({ locizeLastUsed: { ... } })` keeps type-checking when i18next 27 stops declaring that option in core. With i18next 26 core's own declaration still applies.
+- types: `LocizeLastusedOptions` now matches what the plugin reads: `apiKey` is optional (it falls back to `backend.apiKey`), `debounceSubmit` is added, and `allowedHosts` is a `readonly string[]` (a function was never supported at runtime).
+- chore: i18next devDependency updated to 26.7.1
+
 ### 5.0.1
 
 - a key the locize API refuses (401: no write access, e.g. a `readonly` key; 403: a plan limit) is refused again on every later submit, so after the first refusal lastused warns once in the console and stops sending for the page.

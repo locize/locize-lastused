@@ -1,15 +1,14 @@
 import { Module } from "i18next";
 
-type AllowedHostsFunction = (hostname: string) => boolean;
 export interface LocizeLastusedOptions {
   /**
    * your locize projectId
    */
   projectId: string;
   /**
-   * your locize apikey (only use this in development) to add / update translations
+   * your locize apikey (only use this in development); falls back to `backend.apiKey`
    */
-  apiKey: string;
+  apiKey?: string;
   /**
    * the reference (source) language of your project (default "en")
    */
@@ -31,9 +30,20 @@ export interface LocizeLastusedOptions {
    */
   setContentTypeJSON?: boolean;
   /**
-   * hostnames that are allowed to create & update keys
+   * debounce interval to send data in milliseconds (default 90000)
    */
-  allowedHosts?: string[] | AllowedHostsFunction;
+  debounceSubmit?: number;
+  /**
+   * hostnames that are allowed to send last used data (default ["localhost"])
+   */
+  allowedHosts?: readonly string[];
+}
+
+declare module "i18next" {
+  // i18next <= 26 also declares `locizeLastUsed` on InitOptions; that type has to stay assignable to this one.
+  interface CustomPluginOptions {
+    locizeLastUsed?: LocizeLastusedOptions;
+  }
 }
 
 declare class LocizeLastusedBackend implements Module
@@ -44,7 +54,7 @@ declare class LocizeLastusedBackend implements Module
     options?: LocizeLastusedOptions,
   ): void;
 
-  
+
   type: "3rdParty";
   options: LocizeLastusedOptions;
 }

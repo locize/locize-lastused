@@ -47,7 +47,7 @@
     "eslint": "9.39.4",
     "expect.js": "0.3.1",
     "globals": "17.6.0",
-    "i18next": "23.16.7",
+    "i18next": "^26.7.1",
     "json-server": "0.17.4",
     "mocha": "10.8.2",
     "neostandard": "0.13.0",
