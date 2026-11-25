@@ -30,9 +30,13 @@ export interface LocizeLastusedOptions {
    */
   setContentTypeJSON?: boolean;
   /**
-   * debounce interval to send data in milliseconds (default 90000)
+   * the first new key starts a wait of this many milliseconds, then everything waiting is sent (default 90000)
    */
   debounceSubmit?: number;
+  /**
+   * a key looked up again this long after it was sent is sent again, in milliseconds (default 43500000, 12 hours and 5 minutes)
+   */
+  resubmitAfter?: number;
   /**
    * hostnames that are allowed to send last used data (default ["localhost"])
    */

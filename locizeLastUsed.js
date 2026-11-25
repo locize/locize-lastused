@@ -11,21 +11,6 @@ var locizeLastUsed = (function() {
 		});
 		return obj;
 	}
-	function debounce(func, wait, immediate) {
-		let timeout;
-		return function() {
-			const context = this;
-			const args = arguments;
-			const later = function() {
-				timeout = null;
-				if (!immediate) func.apply(context, args);
-			};
-			const callNow = immediate && !timeout;
-			clearTimeout(timeout);
-			timeout = setTimeout(later, wait);
-			if (callNow) func.apply(context, args);
-		};
-	}
 	function isMissingOption(obj, props) {
 		return props.reduce((mem, p) => {
 			if (mem) return mem;
@@ -75,15 +60,23 @@ var locizeLastUsed = (function() {
 		if (typeof fetch === "function") fetch(url, {
 			method: payload ? "POST" : "GET",
 			body: payload ? JSON.stringify(payload) : void 0,
-			headers
+			headers,
+			keepalive: !!options.keepalive
 		}).then(resolver).catch(callback);
 		else fetchApi(url, {
 			method: payload ? "POST" : "GET",
 			body: payload ? JSON.stringify(payload) : void 0,
-			headers
+			headers,
+			keepalive: !!options.keepalive
 		}).then(resolver).catch(callback);
 	};
-	const requestWithXmlHttpRequest = (options, url, payload, callback) => {
+	const requestWithXmlHttpRequest = (options, url, payload, cb) => {
+		let completed = false;
+		const callback = (err, res) => {
+			if (completed) return;
+			completed = true;
+			cb(err, res);
+		};
 		try {
 			const x = XmlHttpRequestApi ? new XmlHttpRequestApi() : new ActiveXObjectApi("MSXML2.XMLHTTP.3.0");
 			x.open(payload ? "POST" : "GET", url, 1);
@@ -100,7 +93,7 @@ var locizeLastUsed = (function() {
 			};
 			x.send(JSON.stringify(payload));
 		} catch (e) {
-			console && console.log(e);
+			callback(e);
 		}
 	};
 	const request = (options, url, payload, callback) => {
@@ -122,6 +115,7 @@ var locizeLastUsed = (function() {
 			setContentTypeJSON: false,
 			version: "latest",
 			debounceSubmit: 9e4,
+			resubmitAfter: 435e5,
 			allowedHosts: ["localhost"]
 		};
 	};
@@ -137,10 +131,21 @@ var locizeLastUsed = (function() {
 			const hostname = typeof window !== "undefined" && window.location && window.location.hostname;
 			if (hostname) this.isAllowed = this.options.allowedHosts.indexOf(hostname) > -1;
 			else this.isAllowed = true;
-			this.submitting = null;
-			this.pending = {};
-			this.done = {};
-			this.submit = debounce(this.submit, this.options.debounceSubmit);
+			if (this.callbacks) this.callbacks.splice(0).forEach((callback) => callback(/* @__PURE__ */ new Error("locize-lastused: init() was called again before these keys were sent")));
+			clearTimeout(this.timer);
+			this.timer = null;
+			this.sending = false;
+			this.pending = Object.create(null);
+			this.callbacks = [];
+			this.sentAt = Object.create(null);
+			if (typeof window !== "undefined" && typeof document !== "undefined" && window.addEventListener && !this.listening) {
+				this.listening = true;
+				const flush = () => this.send(true);
+				window.addEventListener("pagehide", flush);
+				document.addEventListener("visibilitychange", () => {
+					if (document.visibilityState === "hidden") flush();
+				});
+			}
 			if (isI18next) this.interceptI18next(options);
 		},
 		interceptI18next(i18next) {
@@ -151,40 +156,71 @@ var locizeLastUsed = (function() {
 			};
 		},
 		used(ns, key, callback) {
-			["pending", "done"].forEach((k) => {
-				if (this.done[ns] && this.done[ns][key]) return;
-				if (!this[k][ns]) this[k][ns] = {};
-				this[k][ns][key] = true;
-			});
-			this.submit(callback);
-		},
-		submit(callback) {
 			if (!this.isAllowed) return callback && callback(/* @__PURE__ */ new Error("not allowed"));
-			if (this.submitting) return this.submit(callback);
+			const now = Date.now();
+			const sentAt = this.sentAt[ns] && this.sentAt[ns][key];
+			if (sentAt && now - sentAt < this.options.resubmitAfter) return callback && callback();
+			if (!this.sentAt[ns]) this.sentAt[ns] = Object.create(null);
+			this.sentAt[ns][key] = now;
+			this.queue(ns, [key], 1);
+			if (callback) this.callbacks.push(callback);
+			this.schedule();
+		},
+		queue(ns, keys, attempt) {
+			if (!this.pending[ns]) this.pending[ns] = Object.create(null);
+			keys.forEach((key) => {
+				this.pending[ns][key] = attempt;
+			});
+		},
+		schedule() {
+			if (this.timer) return;
+			this.timer = setTimeout(() => {
+				this.timer = null;
+				this.send();
+			}, this.options.debounceSubmit);
+		},
+		send(keepalive) {
+			const namespaces = Object.keys(this.pending);
+			if (!namespaces.length) return;
+			if (this.sending && !keepalive) return;
+			const batch = this.pending;
+			const callbacks = this.callbacks;
+			const options = this.options;
+			this.pending = Object.create(null);
+			this.callbacks = [];
+			const finish = (err) => callbacks.forEach((callback) => callback(err));
+			if (!this.isAllowed) return finish(/* @__PURE__ */ new Error("not allowed"));
 			const isMissing = isMissingOption(this.options, [
 				"projectId",
 				"version",
 				"apiKey",
 				"referenceLng"
 			]);
-			if (isMissing) return callback && callback(new Error(isMissing));
-			this.submitting = this.pending;
-			this.pending = {};
-			const namespaces = Object.keys(this.submitting);
+			if (isMissing) return finish(new Error(isMissing));
+			if (!keepalive) this.sending = true;
+			let keepaliveBudget = keepalive ? 61440 : 0;
 			let todo = namespaces.length;
-			const doneOne = (err, res) => {
-				if (res && (res.status === 401 || res.status === 403) && this.isAllowed) {
+			let lastError;
+			const doneOne = (ns, keys) => (err, res) => {
+				const status = res && res.status;
+				const noAnswer = !status && (!!err || status === 0);
+				const current = this.options === options;
+				if (!current) {} else if ((status === 401 || status === 403) && this.isAllowed) {
 					this.isAllowed = false;
-					if (typeof console !== "undefined" && console.warn) console.warn(`locize-lastused: stopped sending last used information on this page, the locize API answered ${res.status} ${err || ""}. A 401 means the api key has no write access (it needs the role "user" or "admin"); lastused belongs on development or staging, never in production.`);
+					if (typeof console !== "undefined" && console.warn) console.warn(`locize-lastused: stopped sending last used information on this page, the locize API answered ${status} ${err || ""}. A 401 means the api key has no write access (it needs the role "user" or "admin"); lastused belongs on development or staging, never in production.`);
+				} else if (noAnswer || status === 429 || status >= 500) {
+					const again = keys.filter((key) => batch[ns][key] < 2);
+					if (again.length) this.queue(ns, again, 2);
 				}
+				if (noAnswer || status >= 400) lastError = err || /* @__PURE__ */ new Error(`locize-lastused: the locize API answered ${status}`);
 				todo--;
-				if (!todo) {
-					this.submitting = null;
-					if (callback) callback(err);
-				}
+				if (todo) return;
+				if (current && !keepalive) this.sending = false;
+				if (current && Object.keys(this.pending).length) this.schedule();
+				setTimeout(() => finish(lastError));
 			};
 			namespaces.forEach((ns) => {
-				const keys = Object.keys(this.submitting[ns]);
+				const keys = Object.keys(batch[ns]);
 				const url = replaceIn(this.options.lastUsedPath, [
 					"projectId",
 					"version",
@@ -194,8 +230,13 @@ var locizeLastUsed = (function() {
 					lng: this.options.referenceLng,
 					ns
 				}, this.options));
-				if (keys.length) request(defaults({ authorize: true }, this.options), url, keys, doneOne);
-				else doneOne();
+				const bytes = typeof TextEncoder === "function" ? new TextEncoder().encode(JSON.stringify(keys)).length : Infinity;
+				const useKeepalive = bytes <= keepaliveBudget;
+				if (useKeepalive) keepaliveBudget -= bytes;
+				request(defaults({
+					authorize: true,
+					keepalive: useKeepalive
+				}, this.options), url, keys, doneOne(ns, keys));
 			});
 		}
 	};

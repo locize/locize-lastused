@@ -1,6 +1,7 @@
 import expect from 'expect.js'
 import jsonServer from 'json-server'
 let js
+export const received = []
 
 const server = (done) => {
   if (js) return done(null, js)
@@ -20,6 +21,20 @@ const server = (done) => {
       type: 'authorizationError.apiKey.wrongRole',
       message: 'Unauthorized: ApiKey not authorized with role (readonly)!'
     })
+  })
+
+  // records what reaches it; the namespace `flaky` fails once with a 500
+  let flakyFailed = false
+  // `down` always fails with a 500 (and is recorded), `slow` answers after 300 ms
+  js.post('/used/record/latest/en/:ns', jsonServer.bodyParser, (req, res) => {
+    if (req.params.ns === 'flaky' && !flakyFailed) {
+      flakyFailed = true
+      return res.status(500).jsonp({ message: 'boom' })
+    }
+    received.push([req.params.ns, req.body])
+    if (req.params.ns === 'down') return res.status(500).jsonp({ message: 'down' })
+    if (req.params.ns === 'slow') return setTimeout(() => res.jsonp({ all: 'ok' }), 300)
+    res.jsonp({ all: 'ok' })
   })
 
   js.use(jsonServer.defaults())

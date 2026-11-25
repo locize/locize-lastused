@@ -42,8 +42,13 @@ $ npm install locize-lastused
   // version - defaults to latest
   version: '[VERSION]',
 
-  // debounce interval to send data in milliseconds
+  // the first new key starts a wait of this many milliseconds, then everything waiting is sent
+  // (in a browser, also when the page is closed or hidden)
   debounceSubmit: 90000,
+
+  // a key looked up again this long after it was sent is sent again, in milliseconds,
+  // so a page or server running for days keeps its keys' last use current
+  resubmitAfter: 43500000,
 
   // hostnames that are allowed to send last used data
   // please keep those to your local system, staging, test servers (not production)

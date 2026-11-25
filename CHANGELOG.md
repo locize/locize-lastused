@@ -1,3 +1,15 @@
+### 5.2.0
+
+- fix: after one send with nothing new in it, lastused never sent again on that page. A lookup of a key it had already sent still started a send; that send found nothing waiting, but marked itself as running and never finished, so every later send waited for it forever. In a single-page app this meant: the keys of the first view were sent, those of every view after it never were.
+- fix: a page that kept translating (a re-render, a clock, polling) never sent anything: every lookup, also of a key already sent, restarted the 90 second wait. Now the first new key starts the wait (`debounceSubmit`) and later keys do not restart it, so whatever is waiting goes out once per interval, also while new keys keep coming.
+- feat: a key looked up again a little over 12 hours after it was sent is sent again (`resubmitAfter`, in milliseconds, default 12 hours and 5 minutes; the API keeps a newer last use only once the stored one is more than 12 hours old). Before, each key was sent once per page or process, so on a staging server running for weeks the last use of its keys stopped at the day it started, and keys still in use looked unused.
+- feat: in a browser, what is waiting is sent when the page is closed or hidden, also while another send is still running, with `keepalive` so the request can outlive the page (up to the browser's 64 KiB for such requests; a larger body is sent without it and is usually cancelled when the page goes). A visit shorter than the interval sent nothing before.
+- fix: the keys of a send that got no answer, a 429 or a 5xx were dropped; they now get one more try with the next send. A 401 or 403 still stops lastused for the page. Under XMLHttpRequest, no answer at all counted as success, and an exception while sending left the send running forever.
+- fix: only the callback of the last `used()` before a send was called; now each one is, once, and after the request has ended, so a callback that throws no longer ends a send twice. A new `init()` calls the callbacks still waiting with an error instead of dropping them, and a send still running for the earlier settings changes nothing of the new ones.
+- fix: a namespace or key named `__proto__` (reachable through `t('__proto__:x')`) wrote onto the prototype of every object.
+- fix: on a host that is not allowed, `used()` no longer queues keys it will never send, and its callback gets the error at once.
+- fix: every `init()` wrapped the send in one more debounce.
+
 ### 5.1.0
 
 - types: the plugin now declares its own `locizeLastUsed` init option (it augments i18next's `CustomPluginOptions`), so `i18next.init({ locizeLastUsed: { ... } })` keeps type-checking when i18next 27 stops declaring that option in core. With i18next 26 core's own declaration still applies.
