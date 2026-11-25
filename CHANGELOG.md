@@ -9,6 +9,7 @@
 - fix: a namespace or key named `__proto__` (reachable through `t('__proto__:x')`) wrote onto the prototype of every object.
 - fix: on a host that is not allowed, `used()` no longer queues keys it will never send, and its callback gets the error at once.
 - fix: every `init()` wrapped the send in one more debounce.
+- chore: tests and type tests run against i18next 27.2.9; CI uses actions/checkout and actions/setup-node v7.
 
 ### 5.1.0
 
