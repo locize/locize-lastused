@@ -11,6 +11,7 @@ const yourOptions = {
     // referenceLng: 'en',
     projectId: '3d0aa5aa-4660-4154-b6d9-907dbef10bb2',
     apiKey: '51837bfd-ed1f-4ed4-afb6-dd3049f6ee7f',
+    cdnType: 'pro',
 		// version: 'staging',
     // loadPath: 'https://api.locize.app/2596e805-2ce2-4e21-9481-ee62202ababd/{{version}}/{{lng}}/{{ns}}',
     // addPath: 'https://api.locize.app/missing/2596e805-2ce2-4e21-9481-ee62202ababd/{{version}}/{{lng}}/{{ns}}'
